@@ -6,11 +6,11 @@ namespace ServiceWatchdog.Api.Services
 {
     public struct DowntimeWindow
         {
-            private DateTimeOffset _start;
-            private DateTimeOffset _end;
+            private DateTime _start;
+            private DateTime _end;
             private List<OutageStatistic> _outages;
 
-            public DowntimeWindow(DateTimeOffset start, DateTimeOffset end, ServiceStatus causedStatus)
+            public DowntimeWindow(DateTime start, DateTime end, ServiceStatus causedStatus)
             {
                 _start = start;
                 _end = end;
@@ -19,15 +19,15 @@ namespace ServiceWatchdog.Api.Services
                 CreateStatistic(end - start, causedStatus);
             }
 
-            public DateTimeOffset Start => _start;
+            public DateTime Start => _start;
 
-            public DateTimeOffset End => _end;
+            public DateTime End => _end;
 
             public TimeSpan Duration => _end - _start;
 
             public List<OutageStatistic> Outages => _outages;
 
-            public bool OverlapsWith(DateTimeOffset start, DateTimeOffset end)
+            public bool OverlapsWith(DateTime start, DateTime end)
             {
                 if (start > _start && start < _end)
                 {
@@ -42,7 +42,7 @@ namespace ServiceWatchdog.Api.Services
                 return false;
             }
 
-            public void Adjust(DateTimeOffset start, DateTimeOffset end, ServiceStatus causedStatus)
+            public void Adjust(DateTime start, DateTime end, ServiceStatus causedStatus)
             {
                 if (start < _start)
                 {

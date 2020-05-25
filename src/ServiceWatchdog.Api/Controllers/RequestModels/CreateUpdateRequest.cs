@@ -10,7 +10,7 @@ namespace ServiceWatchdog.Api.Controllers.RequestModels
         [JsonPropertyName("message")]
         public string Message { get; set; }
 
-        [Required]
+        [Required, RequiredEnum]
         [JsonPropertyName("state")]
         public IncidentState State { get; set; }
 

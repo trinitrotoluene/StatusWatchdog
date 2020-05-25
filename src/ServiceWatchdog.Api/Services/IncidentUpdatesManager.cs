@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,7 @@ namespace ServiceWatchdog.Api.Services
         public IncidentUpdate CreateIncidentUpdate(IncidentUpdate incidentUpdate)
         {
             var model = new IncidentUpdateModel(incidentUpdate);
-
+            
             using var ctx = CreateContext();
 
             ctx.IncidentUpdates.Add(model);

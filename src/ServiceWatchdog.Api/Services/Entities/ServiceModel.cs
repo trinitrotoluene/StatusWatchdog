@@ -30,7 +30,7 @@ namespace ServiceWatchdog.Api.Services.Entities
             Slug = service.Slug;
             DisplayName = service.DisplayName;
             Description = service.Description;
-            Status = ServiceStatus.Normal;
+            Status = service.Status;
             CreatedAt = service.CreatedAt;
         }
     }

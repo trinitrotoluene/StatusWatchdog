@@ -15,10 +15,10 @@ namespace ServiceWatchdog.Api.Models
         public string Title { get; set; }
 
         [JsonPropertyName("created_at")]
-        public DateTimeOffset CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         [JsonPropertyName("resolved_at")]
-        public DateTimeOffset? ResolvedAt { get; set; }
+        public DateTime? ResolvedAt { get; set; }
 
         [JsonPropertyName("state")]
         public IncidentState State { get; set; }

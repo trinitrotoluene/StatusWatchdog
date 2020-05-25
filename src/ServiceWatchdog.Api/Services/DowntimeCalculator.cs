@@ -30,8 +30,8 @@ namespace ServiceWatchdog.Api.Services
 
             var statistics = new DowntimeStatistic[limit];
 
-            var oldestDate = DateTimeOffset.UtcNow.AddDays(-limit);
-            var dayDiff = Math.Ceiling(service.CreatedAt.Subtract(oldestDate).TotalDays);
+            var oldestDate = DateTimeOffset.UtcNow.UtcDateTime.AddDays(-limit);
+            var dayDiff = Math.Floor(service.CreatedAt.Subtract(oldestDate).TotalDays);
 
             int i = 0;
             for (; i < dayDiff && i < limit; i++)
@@ -39,7 +39,7 @@ namespace ServiceWatchdog.Api.Services
                 statistics[i] = new DowntimeStatistic { UpPercentage = -1, Outages = null };
             }
 
-            var now = DateTimeOffset.UtcNow.Date;
+            var now = DateTime.UtcNow.Date;
 
             for (; i < limit; i++)
             {
@@ -57,14 +57,14 @@ namespace ServiceWatchdog.Api.Services
 
         private DowntimeStatistic GetPercentageUptime(int serviceId, DateTime date, DateTimeOffset? nowTime = null)
         {
-            DateTimeOffset now;
+            DateTime now;
             if (nowTime == null)
             {
-                now = new DateTimeOffset(date.Year, date.Month, date.Day, 23, 59, 59, 0, new TimeSpan(0, 0, 0));
+                now = new DateTime(date.Year, date.Month, date.Day, 23, 59, 59, 0);
             }
             else
             {
-                now = nowTime.Value;
+                now = nowTime.Value.UtcDateTime;
             }
 
             var incidents = _incidentsManager.GetIncidents(serviceId);
@@ -84,12 +84,11 @@ namespace ServiceWatchdog.Api.Services
                 return new DowntimeStatistic { UpPercentage = 100, Outages = null };
 
             var windows = new List<DowntimeWindow>();
-            var startOfDay = new DateTimeOffset(now.Date);
             foreach (var incident in applicableIncidents)
             {
-                if (incident.CreatedAt < startOfDay)
+                if (incident.CreatedAt < date)
                 {
-                    ComputeIntoWindows(windows, startOfDay, incident.ResolvedAt ?? now, incident.CausedStatus);
+                    ComputeIntoWindows(windows, date, incident.ResolvedAt ?? now, incident.CausedStatus);
                 }
                 else
                 {
@@ -106,7 +105,7 @@ namespace ServiceWatchdog.Api.Services
             return new DowntimeStatistic { UpPercentage = upPercentage, Outages = outages };
         }
 
-        private void ComputeIntoWindows(List<DowntimeWindow> windows, DateTimeOffset createdAt, DateTimeOffset resolvedAt, ServiceStatus causedStatus)
+        private void ComputeIntoWindows(List<DowntimeWindow> windows, DateTime createdAt, DateTime resolvedAt, ServiceStatus causedStatus)
         {
             foreach (var window in windows)
             {

@@ -100,11 +100,11 @@ namespace ServiceWatchdog.Api.Controllers
             incident.MostRecentUpdateId = update.Id;
             if (incident.State == IncidentState.Resolved)
             {
-                incident.ResolvedAt = DateTimeOffset.UtcNow;
+                incident.ResolvedAt = DateTime.UtcNow;
 
                 var service = _servicesManager.GetService(incident.ServiceId);
                 var incidents = _incidentsManager.GetIncidents(incident.ServiceId);
-                var unresolvedIncidents = incidents.Where(x => x.ResolvedAt == null);
+                var unresolvedIncidents = incidents.Where(x => x.ResolvedAt == null && x.Id != incident.Id);
 
                 if (!unresolvedIncidents.Any())
                 {

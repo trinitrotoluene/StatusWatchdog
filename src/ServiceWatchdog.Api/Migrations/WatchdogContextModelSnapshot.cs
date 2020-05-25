@@ -29,17 +29,17 @@ namespace ServiceWatchdog.Api.Migrations
                     b.Property<int>("CausedStatus")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasDefaultValueSql("timezone('utc', now())");
 
                     b.Property<int>("MostRecentUpdateId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("ResolvedAt")
+                    b.Property<DateTime?>("ResolvedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasDefaultValue(null);
 
                     b.Property<int>("ServiceId")
@@ -67,9 +67,9 @@ namespace ServiceWatchdog.Api.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
+                        .HasColumnType("timestamp without time zone")
                         .HasDefaultValueSql("timezone('utc', now())");
 
                     b.Property<int>("IncidentId")

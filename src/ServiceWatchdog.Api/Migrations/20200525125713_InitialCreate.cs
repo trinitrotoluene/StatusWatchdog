@@ -32,8 +32,8 @@ namespace ServiceWatchdog.Api.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(maxLength: 128, nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(nullable: false, defaultValueSql: "timezone('utc', now())"),
-                    ResolvedAt = table.Column<DateTimeOffset>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "timezone('utc', now())"),
+                    ResolvedAt = table.Column<DateTime>(nullable: true),
                     State = table.Column<int>(nullable: false),
                     CausedStatus = table.Column<int>(nullable: false),
                     MostRecentUpdateId = table.Column<int>(nullable: false),
@@ -57,7 +57,7 @@ namespace ServiceWatchdog.Api.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Message = table.Column<string>(maxLength: 2048, nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(nullable: false, defaultValueSql: "timezone('utc', now())"),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "timezone('utc', now())"),
                     State = table.Column<int>(nullable: false),
                     IncidentId = table.Column<int>(nullable: false)
                 },
