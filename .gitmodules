@@ -1,0 +1,3 @@
+[submodule "src/ServiceWatchdog.Api/client-app"]
+	path = src/ServiceWatchdog.Api/client-app
+	url = https://github.com/trinitrotoluene/ServiceWatchdog.SPA
