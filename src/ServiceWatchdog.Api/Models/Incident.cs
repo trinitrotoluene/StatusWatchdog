@@ -23,6 +23,9 @@ namespace ServiceWatchdog.Api.Models
         [JsonPropertyName("state")]
         public IncidentState State { get; set; }
 
+        [JsonPropertyName("caused_status")]
+        public ServiceStatus CausedStatus { get; set; }
+
         [JsonPropertyName("most_recent_update_id")]
         public int MostRecentUpdateId { get; set; }
 
@@ -43,6 +46,7 @@ namespace ServiceWatchdog.Api.Models
             CreatedAt = model.CreatedAt;
             ResolvedAt = model.ResolvedAt;
             State = model.State;
+            CausedStatus = model.CausedStatus;
             MostRecentUpdateId = model.MostRecentUpdateId;
             ServiceId = model.ServiceId;
             Updates = model.Updates?.Select(x => new IncidentUpdate(x));

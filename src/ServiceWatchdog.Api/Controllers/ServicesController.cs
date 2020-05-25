@@ -100,6 +100,12 @@ namespace ServiceWatchdog.Api.Controllers
             incident.MostRecentUpdateId = incidentUpdate.Id;
             _incidentsManager.UpdateIncident(incident);
 
+            if (service.Status < incident.CausedStatus)
+            {
+                service.Status = incident.CausedStatus;
+                _servicesManager.Update(service);
+            }
+
             return Ok(incident);
         }
 

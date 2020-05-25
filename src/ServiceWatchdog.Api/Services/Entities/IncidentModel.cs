@@ -16,6 +16,8 @@ namespace ServiceWatchdog.Api.Services.Entities
 
         public IncidentState State { get; set; }
 
+        public ServiceStatus CausedStatus { get; set; }
+
         public int MostRecentUpdateId { get; set; }
 
         public int ServiceId { get; set; }
@@ -35,6 +37,7 @@ namespace ServiceWatchdog.Api.Services.Entities
             CreatedAt = incident.CreatedAt;
             ResolvedAt = incident.ResolvedAt;
             State = incident.State;
+            CausedStatus = incident.CausedStatus;
             MostRecentUpdateId = incident.MostRecentUpdateId;
             ServiceId = incident.ServiceId;
         }

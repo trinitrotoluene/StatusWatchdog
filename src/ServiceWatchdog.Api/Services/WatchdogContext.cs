@@ -84,6 +84,9 @@ namespace ServiceWatchdog.Api.Services
             incident.Property(x => x.State)
                 .IsRequired();
 
+            incident.Property(x => x.CausedStatus)
+                .IsRequired();
+
             incident.Property(x => x.MostRecentUpdateId)
                 .IsRequired();
 

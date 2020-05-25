@@ -18,12 +18,17 @@ namespace ServiceWatchdog.Api.Controllers.RequestModels
         [JsonPropertyName("state")]
         public IncidentState State { get; set; }
 
+        [Required]
+        [JsonPropertyName("caused_status")]
+        public ServiceStatus CausedStatus { get; set; }
+
         public Incident ToIncident()
         {
             return new Incident
             {
                 State = State,
-                Title = Title
+                Title = Title,
+                CausedStatus = CausedStatus
             };
         }
 

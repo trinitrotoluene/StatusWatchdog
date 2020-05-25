@@ -19,16 +19,16 @@ namespace ServiceWatchdog.Api.Services
             _servicesManager = servicesManager;
         }
 
-        public double[] GetDowntimeStatistics(Service service, int limit = 60)
+        public DowntimeStatistic[] GetDowntimeStatistics(Service service, int limit = 60)
         {
             const string DOWNTIME_CACHE_PREFIX = "_service_downtime_aggregate:";
 
             if (_memoryCache.TryGetValue(DOWNTIME_CACHE_PREFIX + service.Id.ToString(), out var existingStatistic))
             {
-                return (double[])existingStatistic;
+                return (DowntimeStatistic[])existingStatistic;
             }
 
-            var statistics = new double[limit];
+            var statistics = new DowntimeStatistic[limit];
 
             var oldestDate = DateTimeOffset.UtcNow.AddDays(-limit);
             var dayDiff = Math.Ceiling(service.CreatedAt.Subtract(oldestDate).TotalDays);
@@ -36,7 +36,7 @@ namespace ServiceWatchdog.Api.Services
             int i = 0;
             for (; i < dayDiff && i < limit; i++)
             {
-                statistics[i] = -1;
+                statistics[i] = new DowntimeStatistic { UpPercentage = -1, Outages = null };
             }
 
             var now = DateTimeOffset.UtcNow.Date;
@@ -50,12 +50,12 @@ namespace ServiceWatchdog.Api.Services
                     statistics[i] = GetPercentageUptime(service.Id, date);
             }
 
-            //_memoryCache.CreateEntry(DOWNTIME_CACHE_PREFIX + service.Id.ToString()).SetAbsoluteExpiration(TimeSpan.FromSeconds(5));
+            _memoryCache.CreateEntry(DOWNTIME_CACHE_PREFIX + service.Id.ToString()).SetAbsoluteExpiration(TimeSpan.FromSeconds(5));
 
             return statistics;
         }
 
-        private double GetPercentageUptime(int serviceId, DateTime date, DateTimeOffset? nowTime = null)
+        private DowntimeStatistic GetPercentageUptime(int serviceId, DateTime date, DateTimeOffset? nowTime = null)
         {
             DateTimeOffset now;
             if (nowTime == null)
@@ -81,7 +81,7 @@ namespace ServiceWatchdog.Api.Services
             .ToArray();
 
             if (applicableIncidents.Length == 0)
-                return 100;
+                return new DowntimeStatistic { UpPercentage = 100, Outages = null };
 
             var windows = new List<DowntimeWindow>();
             var startOfDay = new DateTimeOffset(now.Date);
@@ -89,78 +89,35 @@ namespace ServiceWatchdog.Api.Services
             {
                 if (incident.CreatedAt < startOfDay)
                 {
-                    ComputeIntoWindows(windows, startOfDay, incident.ResolvedAt ?? now);
+                    ComputeIntoWindows(windows, startOfDay, incident.ResolvedAt ?? now, incident.CausedStatus);
                 }
                 else
                 {
-                    ComputeIntoWindows(windows, incident.CreatedAt, incident.ResolvedAt ?? now);
+                    ComputeIntoWindows(windows, incident.CreatedAt, incident.ResolvedAt ?? now, incident.CausedStatus);
                 }
             }
 
-            var downtimeWindowTotalSize = windows.Sum(x => Math.Abs(x.Size.TotalSeconds));
+            var downtimeWindowTotalSize = windows.Sum(x => Math.Abs(x.Duration.TotalSeconds));
 
             const int SECONDS_IN_DAY = 86400;
-            return ((SECONDS_IN_DAY - downtimeWindowTotalSize) / SECONDS_IN_DAY) * 100;
+            double upPercentage = ((SECONDS_IN_DAY - downtimeWindowTotalSize) / SECONDS_IN_DAY) * 100;
+
+            var outages = windows.SelectMany(x => x.Outages);
+            return new DowntimeStatistic { UpPercentage = upPercentage, Outages = outages };
         }
 
-        private void ComputeIntoWindows(List<DowntimeWindow> windows, DateTimeOffset createdAt, DateTimeOffset resolvedAt)
+        private void ComputeIntoWindows(List<DowntimeWindow> windows, DateTimeOffset createdAt, DateTimeOffset resolvedAt, ServiceStatus causedStatus)
         {
             foreach (var window in windows)
             {
                 if (window.OverlapsWith(createdAt, resolvedAt))
                 {
-                    window.Adjust(createdAt, resolvedAt);
+                    window.Adjust(createdAt, resolvedAt, causedStatus);
                     return;
                 }
             }
 
-            windows.Add(new DowntimeWindow(createdAt, resolvedAt));
-        }
-
-        private struct DowntimeWindow
-        {
-            private DateTimeOffset _start;
-            private DateTimeOffset _end;
-
-            public DowntimeWindow(DateTimeOffset start, DateTimeOffset end)
-            {
-                _start = start;
-                _end = end;
-            }
-
-            public DateTimeOffset Start => _start;
-
-            public DateTimeOffset End => _end;
-
-            public TimeSpan Size => _end - _start;
-
-            public bool OverlapsWith(DateTimeOffset start, DateTimeOffset end)
-            {
-                if (start > _start && start < _end)
-                {
-                    return true;
-                }
-
-                if (start < _start && end > _start)
-                {
-                    return true;
-                }
-
-                return false;
-            }
-
-            public void Adjust(DateTimeOffset start, DateTimeOffset end)
-            {
-                if (start < _start)
-                {
-                    _start = start;
-                }
-
-                if (end > _end)
-                {
-                    _end = end;
-                }
-            }
+            windows.Add(new DowntimeWindow(createdAt, resolvedAt, causedStatus));
         }
     }
 }
