@@ -10,7 +10,7 @@ using ServiceWatchdog.Api.Services;
 namespace ServiceWatchdog.Api.Migrations
 {
     [DbContext(typeof(WatchdogContext))]
-    [Migration("20200524214151_InitialCreate")]
+    [Migration("20200525120036_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,9 @@ namespace ServiceWatchdog.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("CausedStatus")
+                        .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()

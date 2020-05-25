@@ -35,6 +35,7 @@ namespace ServiceWatchdog.Api.Migrations
                     CreatedAt = table.Column<DateTimeOffset>(nullable: false, defaultValueSql: "timezone('utc', now())"),
                     ResolvedAt = table.Column<DateTimeOffset>(nullable: true),
                     State = table.Column<int>(nullable: false),
+                    CausedStatus = table.Column<int>(nullable: false),
                     MostRecentUpdateId = table.Column<int>(nullable: false),
                     ServiceId = table.Column<int>(nullable: false)
                 },
