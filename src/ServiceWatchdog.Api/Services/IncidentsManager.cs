@@ -65,6 +65,12 @@ namespace ServiceWatchdog.Api.Services
                 .Select(x => new Incident(x));
         }
 
+        public IEnumerable<Incident> GetAllActiveIncidents() {
+            using var ctx = CreateContext();
+
+            return ctx.Incidents.Where(x => x.ResolvedAt == null).ToList().Select(x => new Incident(x));
+        }
+
         public void DeleteIncident(int id)
         {
             using var ctx = CreateContext();

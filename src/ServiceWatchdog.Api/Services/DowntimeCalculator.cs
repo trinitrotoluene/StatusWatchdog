@@ -29,25 +29,26 @@ namespace ServiceWatchdog.Api.Services
             }
 
             var statistics = new DowntimeStatistic[limit];
+            var now = DateTime.UtcNow.Date;
+            
+            var serviceAge = now - service.CreatedAt.Date;
+            var availableDaysOfData = serviceAge.TotalDays + 1;
 
-            var oldestDate = DateTimeOffset.UtcNow.UtcDateTime.AddDays(-limit);
-            var dayDiff = Math.Floor(service.CreatedAt.Subtract(oldestDate).TotalDays);
-
-            int i = 0;
-            for (; i < dayDiff && i < limit; i++)
-            {
-                statistics[i] = new DowntimeStatistic { UpPercentage = -1, Outages = null };
+            int offset = 0;
+            if (availableDaysOfData < limit) {
+                for (; offset < limit - availableDaysOfData; offset++) {
+                    statistics[offset] = new DowntimeStatistic { UpPercentage = -1, Outages = null };
+                }
             }
 
-            var now = DateTime.UtcNow.Date;
 
-            for (; i < limit; i++)
+            for (; offset < limit; offset++)
             {
-                var date = now.AddDays((i - limit) + 1);
-                if (i == limit - 1)
-                    statistics[i] = GetPercentageUptime(service.Id, date, DateTimeOffset.UtcNow);
+                var date = now.AddDays((offset - limit) + 1);
+                if (offset == limit - 1)
+                    statistics[offset] = GetPercentageUptime(service.Id, date, DateTime.UtcNow);
                 else
-                    statistics[i] = GetPercentageUptime(service.Id, date);
+                    statistics[offset] = GetPercentageUptime(service.Id, date);
             }
 
             _memoryCache.CreateEntry(DOWNTIME_CACHE_PREFIX + service.Id.ToString()).SetAbsoluteExpiration(TimeSpan.FromSeconds(5));

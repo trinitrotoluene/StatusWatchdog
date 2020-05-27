@@ -55,27 +55,7 @@ namespace ServiceWatchdog.Api.Services
             return new Service(service);
         }
 
-        public IEnumerable<Service> GetServicesDeep()
-        {
-            if (_memoryCache.TryGetValue(ROOT_VIEW_CACHE_KEY, out var value))
-                return (IEnumerable<Service>)value;
-
-            using var ctx = CreateContext();
-            var serviceQueryResult = ctx.Services
-                .Include(x => x.Incidents)
-                .ThenInclude(x => x.Updates)
-                .ToList()
-                .Select(x => new Service(x))
-                .ToArray();
-
-            _memoryCache.CreateEntry(ROOT_VIEW_CACHE_KEY)
-                .SetValue(serviceQueryResult)
-                .SetAbsoluteExpiration(TimeSpan.FromSeconds(1));
-
-            return serviceQueryResult;
-        }
-
-        public IEnumerable<Service> GetServicesShallow()
+        public IEnumerable<Service> GetServices()
         {
             using var ctx = CreateContext();
             return ctx.Services.ToList().Select(x => new Service(x));

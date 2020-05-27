@@ -26,7 +26,7 @@ namespace ServiceWatchdog.Api.Controllers
         [HttpGet]
         public IActionResult GetServices()
         {
-            return Ok(_servicesManager.GetServicesShallow());
+            return Ok(_servicesManager.GetServices());
         }
 
         [HttpGet("{id}")]

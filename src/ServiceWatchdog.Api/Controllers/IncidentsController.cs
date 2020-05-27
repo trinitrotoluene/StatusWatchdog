@@ -22,6 +22,12 @@ namespace ServiceWatchdog.Api.Controllers
             _servicesManager = servicesManager;
         }
 
+        [HttpGet]
+        public IActionResult GetActiveIncidents()
+        {
+            return Ok(_incidentsManager.GetAllActiveIncidents());
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetIncident([FromRoute] int id)
         {
