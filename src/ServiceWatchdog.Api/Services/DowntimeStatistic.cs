@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -10,5 +11,8 @@ namespace ServiceWatchdog.Api.Services
 
         [JsonPropertyName("outages")]
         public IEnumerable<OutageStatistic> Outages { get; set; }
+
+        [JsonPropertyName("for")]
+        public DateTime? ForDate { get; set; }
     }
 }
