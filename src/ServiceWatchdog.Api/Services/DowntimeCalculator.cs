@@ -30,7 +30,7 @@ namespace ServiceWatchdog.Api.Services
 
             var statistics = new DowntimeStatistic[limit];
             var now = DateTime.UtcNow.Date;
-            
+
             var serviceAge = now - service.CreatedAt.Date;
             var availableDaysOfData = serviceAge.TotalDays + 1;
 

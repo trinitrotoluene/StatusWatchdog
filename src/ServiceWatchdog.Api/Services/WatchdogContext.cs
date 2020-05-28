@@ -12,6 +12,8 @@ namespace ServiceWatchdog.Api.Services
 
         public DbSet<IncidentUpdateModel> IncidentUpdates { get; set; }
 
+        public DbSet<KeyValueModel> KeyValueStore { get; set; }
+
         private readonly string _connectionString;
 
         public WatchdogContext(IConfiguration config)
@@ -110,6 +112,16 @@ namespace ServiceWatchdog.Api.Services
 
             incidentUpdate.Property(x => x.CreatedAt)
                 .HasDefaultValueSql("timezone('utc', now())")
+                .IsRequired();
+
+            var keyValueStore = builder.Entity<KeyValueModel>();
+
+            keyValueStore.HasKey(x => x.Key);
+            keyValueStore.Property(x => x.Key)
+                .IsRequired();
+
+            keyValueStore.Property(x => x.Value)
+                .HasMaxLength(8192)
                 .IsRequired();
         }
     }

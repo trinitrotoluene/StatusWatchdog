@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ServiceWatchdog.Api.Services;
@@ -9,9 +10,10 @@ using ServiceWatchdog.Api.Services;
 namespace ServiceWatchdog.Api.Migrations
 {
     [DbContext(typeof(WatchdogContext))]
-    partial class WatchdogContextModelSnapshot : ModelSnapshot
+    [Migration("20200528104235_KeyValueStore")]
+    partial class KeyValueStore
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
