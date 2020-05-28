@@ -56,7 +56,7 @@ namespace ServiceWatchdog.Api.Services
 
                 CreateStatistic(end - start, causedStatus);
             }
-            
+
             private void CreateStatistic(TimeSpan duration, ServiceStatus status)
             {
                 var outageStatistic = new OutageStatistic

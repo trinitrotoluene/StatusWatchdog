@@ -22,7 +22,7 @@ namespace ServiceWatchdog.Api.Services
         public Incident CreateIncident(Incident incident)
         {
             var model = new IncidentModel(incident);
-            
+
             using var ctx = CreateContext();
 
             ctx.Incidents.Add(model);
@@ -44,7 +44,7 @@ namespace ServiceWatchdog.Api.Services
         public Incident UpdateIncident(Incident incident)
         {
             var model = new IncidentModel(incident);
-            
+
             using var ctx = CreateContext();
             ctx.Incidents.Update(model);
             ctx.SaveChanges();

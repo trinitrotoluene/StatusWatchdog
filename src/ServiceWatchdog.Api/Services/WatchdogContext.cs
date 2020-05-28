@@ -119,7 +119,7 @@ namespace ServiceWatchdog.Api.Services
             keyValueStore.HasKey(x => x.Key);
             keyValueStore.Property(x => x.Key)
                 .IsRequired();
-            
+
             keyValueStore.Property(x => x.Value)
                 .HasMaxLength(8192)
                 .IsRequired();

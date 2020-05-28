@@ -26,7 +26,7 @@ namespace ServiceWatchdog.Api.Services
         public Service CreateService(Service service)
         {
             var model = new ServiceModel(service);
-            
+
             using var ctx = CreateContext();
 
             ctx.Services.Add(model);
