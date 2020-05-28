@@ -7,11 +7,11 @@ using ServiceWatchdog.Api.Services.Entities;
 
 namespace ServiceWatchdog.Api.Services
 {
-    public class KeyValueManager
+    public class KeyValuesManager
     {
         private readonly IConfiguration _config;
         
-        public KeyValueManager(IConfiguration config)
+        public KeyValuesManager(IConfiguration config)
         {
             _config = config;
         }
