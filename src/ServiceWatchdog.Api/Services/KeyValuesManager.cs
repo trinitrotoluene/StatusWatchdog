@@ -10,13 +10,13 @@ namespace ServiceWatchdog.Api.Services
     public class KeyValuesManager
     {
         private readonly IConfiguration _config;
-        
+
         public KeyValuesManager(IConfiguration config)
         {
             _config = config;
         }
 
-        public bool TrySetValue(string key, string value)
+        public void SetValue(string key, string value)
         {
             if (value == null)
             {
@@ -24,22 +24,17 @@ namespace ServiceWatchdog.Api.Services
             }
 
             using var ctx = CreateContext();
-            try
+            var existing = ctx.KeyValueStore.FirstOrDefault(x => x.Key.Equals(key));
+            if (existing == null)
             {
-                ctx.Add(new KeyValueModel
-                {
-                    Key = key,
-                    Value = value
-                });
-                ctx.SaveChanges();
-
-                return true;
+                ctx.KeyValueStore.Add(new KeyValueModel { Key = key, Value = value });
             }
-            catch (DbUpdateException)
+            else
             {
-                // Swallow duplicate key exception
+                existing.Value = value;
+                ctx.Update(existing);
             }
-            return false;
+            ctx.SaveChanges();
         }
 
         public bool TryGetValue(string key, out string value)
@@ -65,6 +60,10 @@ namespace ServiceWatchdog.Api.Services
             var dictionary = new Dictionary<string, string>();
             foreach (var kv in keyValueEntries)
                 dictionary[kv.Key] = kv.Value;
+            
+            foreach (var key in keys)
+                if (!dictionary.ContainsKey(key))
+                    dictionary[key] = null;
 
             return dictionary;
         }
