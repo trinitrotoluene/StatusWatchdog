@@ -61,14 +61,24 @@ namespace ServiceWatchdog.Api.Services
             using var ctx = CreateContext();
 
             return ctx.Incidents.Include(x => x.Service).Where(x => x.Service.Id == serviceId)
-                .ToList()
+                .ToArray()
                 .Select(x => new Incident(x));
         }
 
-        public IEnumerable<Incident> GetAllActiveIncidents() {
+        public IEnumerable<Incident> GetAllActiveIncidents()
+        {
             using var ctx = CreateContext();
 
-            return ctx.Incidents.Where(x => x.ResolvedAt == null).ToList().Select(x => new Incident(x));
+            return ctx.Incidents.Where(x => x.ResolvedAt == null).ToArray().Select(x => new Incident(x));
+        }
+
+        public IEnumerable<Incident> GetRecentIncidents(int withinDays = 5)
+        {
+            using var ctx = CreateContext();
+
+            var now = DateTime.UtcNow.Date;
+            var withinDate = now.AddDays(-withinDays);
+            return ctx.Incidents.Where(x => x.ResolvedAt.HasValue && x.ResolvedAt.Value > withinDate).ToArray().Select(x => new Incident(x));
         }
 
         public void DeleteIncident(int id)

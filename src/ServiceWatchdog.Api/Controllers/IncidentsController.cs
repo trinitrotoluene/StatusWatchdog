@@ -28,6 +28,12 @@ namespace ServiceWatchdog.Api.Controllers
             return Ok(_incidentsManager.GetAllActiveIncidents());
         }
 
+        [HttpGet("recent")]
+        public IActionResult GetRecentIncidents()
+        {
+            return Ok(_incidentsManager.GetRecentIncidents());
+        }
+
         [HttpGet("{id}")]
         public IActionResult GetIncident([FromRoute] int id)
         {
