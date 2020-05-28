@@ -71,7 +71,7 @@ namespace ServiceWatchdog.Api.Services
             var incidents = _incidentsManager.GetIncidents(serviceId);
             var applicableIncidents = incidents.Where(x =>
             {
-                if (x.CreatedAt.Date < now.Date && (x.ResolvedAt == null || x.ResolvedAt.Value.Date == now.Date))
+                if (x.CreatedAt.Date < now.Date && (x.ResolvedAt == null || x.ResolvedAt.Value.Date >= now.Date))
                     return true;
 
                 if (x.CreatedAt.Date == now.Date)
@@ -87,9 +87,17 @@ namespace ServiceWatchdog.Api.Services
             var windows = new List<DowntimeWindow>();
             foreach (var incident in applicableIncidents)
             {
-                if (incident.CreatedAt < date)
+                if (incident.CreatedAt < date && incident.ResolvedAt.HasValue && incident.ResolvedAt > now)
+                {
+                    ComputeIntoWindows(windows, date, now, incident.CausedStatus);
+                }
+                else if (incident.CreatedAt < date)
                 {
                     ComputeIntoWindows(windows, date, incident.ResolvedAt ?? now, incident.CausedStatus);
+                }
+                else if (incident.ResolvedAt > now)
+                {
+                    ComputeIntoWindows(windows, incident.CreatedAt, now, incident.CausedStatus);
                 }
                 else
                 {
