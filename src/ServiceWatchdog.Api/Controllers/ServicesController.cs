@@ -135,6 +135,32 @@ namespace ServiceWatchdog.Api.Controllers
             return Ok(metrics);
         }
 
+        [HttpPost("{id}/metrics")]
+        public IActionResult CreateMetric([FromRoute] int id, [FromBody] CreateMetricRequest requestBody)
+        {
+            var service = _servicesManager.GetService(id);
+            if (service == null)
+            {
+                return NotFound(new
+                {
+                    message = "A service with this ID does not exist."
+                });
+            }
+
+            var metric = requestBody.ToMetric();
+            metric.ServiceId = id;
+            metric = _metricsManager.CreateMetric(metric);
+
+            return Ok(metric);
+        }
+
+        [HttpDelete("metrics/{id}")]
+        public IActionResult DeleteMetric([FromRoute] int metricId)
+        {
+            _metricsManager.RemoveMetric(metricId);
+            return Ok();
+        }
+
         [HttpGet("metrics/{id}")]
         public IActionResult GetMetricEntries([FromRoute] int metricId, [FromQuery] int limit = 60)
         {
