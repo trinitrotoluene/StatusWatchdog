@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using ServiceWatchdog.Api.Models;
@@ -12,6 +13,22 @@ namespace ServiceWatchdog.Api.Services
         public MetricsManager(IConfiguration config)
         {
             _config = config;
+        }
+
+        public Metric GetMetric(int metricId)
+        {
+            using var ctx = CreateContext();
+            var metric = ctx.Metrics.FirstOrDefault(x => x.Id == metricId);
+            if (metric == null)
+                return null;
+
+            return new Metric(metric);
+        }
+
+        public IEnumerable<Metric> GetMetrics(int serviceId)
+        {
+            using var ctx = CreateContext();
+            return ctx.Metrics.Where(x => x.ServiceId == serviceId).ToArray().Select(x => new Metric(x));
         }
 
         public Metric CreateMetric(Metric metric)
@@ -30,6 +47,17 @@ namespace ServiceWatchdog.Api.Services
             using var ctx = CreateContext();
             ctx.Metrics.Remove(new MetricModel { Id = metricId });
             ctx.SaveChanges();
+        }
+
+        public IEnumerable<MetricEntry> GetEntries(int metricId, int limit)
+        {
+            using var ctx = CreateContext();
+            var entries = ctx.MetricEntries.Where(x => x.MetricId == metricId)
+                .TakeLast(limit)
+                .ToArray()
+                .Select(x => new MetricEntry(x));
+
+            return entries;
         }
 
         public MetricEntry CreateEntry(MetricEntry entry)
