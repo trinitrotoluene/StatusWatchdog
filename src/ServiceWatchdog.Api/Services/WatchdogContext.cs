@@ -123,6 +123,32 @@ namespace ServiceWatchdog.Api.Services
             keyValueStore.Property(x => x.Value)
                 .HasMaxLength(8192)
                 .IsRequired();
+
+            var metric = builder.Entity<MetricModel>();
+
+            metric.HasKey(x => x.Id);
+            metric.Property(x => x.Id)
+                .ValueGeneratedOnAdd();
+
+            metric.Property(x => x.Name)
+                .IsRequired();
+
+            metric.HasOne(x => x.Service)
+                .WithMany(x => x.Metrics)
+                .HasForeignKey(x => x.ServiceId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            var metricEntry = builder.Entity<MetricEntryModel>();
+
+            metricEntry.HasKey(x => x.Id);
+            metricEntry.Property(x => x.Id)
+                .ValueGeneratedOnAdd();
+
+            metricEntry.Property(x => x.Value)
+                .IsRequired();
+
+            metricEntry.Property(x => x.Tag)
+                .IsRequired();
         }
     }
 }

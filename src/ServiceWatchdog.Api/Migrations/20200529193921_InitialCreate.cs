@@ -9,6 +9,18 @@ namespace ServiceWatchdog.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "KeyValueStore",
+                columns: table => new
+                {
+                    Key = table.Column<string>(nullable: false),
+                    Value = table.Column<string>(maxLength: 8192, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_KeyValueStore", x => x.Key);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Services",
                 columns: table => new
                 {
@@ -51,6 +63,26 @@ namespace ServiceWatchdog.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MetricModel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(nullable: false),
+                    ServiceId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MetricModel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MetricModel_Services_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Services",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "IncidentUpdates",
                 columns: table => new
                 {
@@ -72,6 +104,27 @@ namespace ServiceWatchdog.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "MetricEntryModel",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Value = table.Column<int>(nullable: false),
+                    Tag = table.Column<int>(nullable: false),
+                    MetricId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MetricEntryModel", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MetricEntryModel_MetricModel_MetricId",
+                        column: x => x.MetricId,
+                        principalTable: "MetricModel",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Incidents_ServiceId",
                 table: "Incidents",
@@ -81,6 +134,16 @@ namespace ServiceWatchdog.Api.Migrations
                 name: "IX_IncidentUpdates_IncidentId",
                 table: "IncidentUpdates",
                 column: "IncidentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MetricEntryModel_MetricId",
+                table: "MetricEntryModel",
+                column: "MetricId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MetricModel_ServiceId",
+                table: "MetricModel",
+                column: "ServiceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Services_Slug",
@@ -95,7 +158,16 @@ namespace ServiceWatchdog.Api.Migrations
                 name: "IncidentUpdates");
 
             migrationBuilder.DropTable(
+                name: "KeyValueStore");
+
+            migrationBuilder.DropTable(
+                name: "MetricEntryModel");
+
+            migrationBuilder.DropTable(
                 name: "Incidents");
+
+            migrationBuilder.DropTable(
+                name: "MetricModel");
 
             migrationBuilder.DropTable(
                 name: "Services");

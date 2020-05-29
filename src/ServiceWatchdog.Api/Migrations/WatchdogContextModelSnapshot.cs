@@ -105,6 +105,50 @@ namespace ServiceWatchdog.Api.Migrations
                     b.ToTable("KeyValueStore");
                 });
 
+            modelBuilder.Entity("ServiceWatchdog.Api.Services.Entities.MetricEntryModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("MetricId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Tag")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MetricId");
+
+                    b.ToTable("MetricEntryModel");
+                });
+
+            modelBuilder.Entity("ServiceWatchdog.Api.Services.Entities.MetricModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ServiceId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("MetricModel");
+                });
+
             modelBuilder.Entity("ServiceWatchdog.Api.Services.Entities.ServiceModel", b =>
                 {
                     b.Property<int>("Id")
@@ -157,6 +201,24 @@ namespace ServiceWatchdog.Api.Migrations
                     b.HasOne("ServiceWatchdog.Api.Services.Entities.IncidentModel", "Incident")
                         .WithMany("Updates")
                         .HasForeignKey("IncidentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ServiceWatchdog.Api.Services.Entities.MetricEntryModel", b =>
+                {
+                    b.HasOne("ServiceWatchdog.Api.Services.Entities.MetricModel", "Metric")
+                        .WithMany("Entries")
+                        .HasForeignKey("MetricId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ServiceWatchdog.Api.Services.Entities.MetricModel", b =>
+                {
+                    b.HasOne("ServiceWatchdog.Api.Services.Entities.ServiceModel", "Service")
+                        .WithMany("Metrics")
+                        .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

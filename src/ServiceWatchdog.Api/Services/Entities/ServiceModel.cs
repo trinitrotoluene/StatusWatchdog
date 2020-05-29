@@ -16,9 +16,11 @@ namespace ServiceWatchdog.Api.Services.Entities
 
         public ServiceStatus Status { get; set; }
 
-        public DateTimeOffset CreatedAt {get; set;}
+        public DateTimeOffset CreatedAt { get; set; }
 
         public ICollection<IncidentModel> Incidents { get; set; }
+
+        public ICollection<MetricModel> Metrics { get; set; }
 
         public ServiceModel()
         {
