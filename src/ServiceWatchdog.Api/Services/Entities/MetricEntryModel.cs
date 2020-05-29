@@ -1,3 +1,5 @@
+using ServiceWatchdog.Api.Models;
+
 namespace ServiceWatchdog.Api.Services.Entities
 {
     public class MetricEntryModel
@@ -11,5 +13,17 @@ namespace ServiceWatchdog.Api.Services.Entities
         public int MetricId { get; set; }
 
         public MetricModel Metric { get; set; }
+
+        public MetricEntryModel()
+        {
+        }
+
+        public MetricEntryModel(MetricEntry entry)
+        {
+            Id = entry.Id;
+            Value = entry.Value;
+            Tag = entry.Tag;
+            MetricId = entry.MetricId;
+        }
     }
 }

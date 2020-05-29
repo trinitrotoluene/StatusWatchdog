@@ -18,6 +18,10 @@ namespace ServiceWatchdog.Api.Models
         [JsonPropertyName("metric_id")]
         public int MetricId { get; set; }
 
+        public MetricEntry()
+        {
+        }
+
         public MetricEntry(MetricEntryModel model)
         {
             Id = model.Id;

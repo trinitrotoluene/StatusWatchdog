@@ -14,6 +14,10 @@ namespace ServiceWatchdog.Api.Services
 
         public DbSet<KeyValueModel> KeyValueStore { get; set; }
 
+        public DbSet<MetricModel> Metrics { get; set; }
+
+        public DbSet<MetricEntryModel> MetricEntries { get; set; }
+
         private readonly string _connectionString;
 
         public WatchdogContext(IConfiguration config)
@@ -131,6 +135,10 @@ namespace ServiceWatchdog.Api.Services
                 .ValueGeneratedOnAdd();
 
             metric.Property(x => x.Name)
+                .IsRequired();
+
+            metric.Property(x => x.Displayed)
+                .HasDefaultValue(false)
                 .IsRequired();
 
             metric.HasOne(x => x.Service)
