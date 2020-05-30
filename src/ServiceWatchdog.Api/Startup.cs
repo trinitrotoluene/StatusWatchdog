@@ -28,6 +28,7 @@ namespace ServiceWatchdog.Api
             services.AddSingleton<IncidentsManager>();
             services.AddSingleton<IncidentUpdatesManager>();
             services.AddSingleton<KeyValuesManager>();
+            services.AddSingleton<MetricsManager>();
             services.AddSingleton<DowntimeCalculator>();
             services.AddDbContext<WatchdogContext>();
             services.AddSwaggerGen(x =>

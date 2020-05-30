@@ -155,6 +155,8 @@ namespace ServiceWatchdog.Api.Services
             metricEntry.Property(x => x.Value)
                 .IsRequired();
 
+            metricEntry.HasIndex(x => x.Tag)
+                .IsUnique();
             metricEntry.Property(x => x.Tag)
                 .IsRequired();
         }

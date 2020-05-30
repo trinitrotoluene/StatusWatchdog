@@ -8,7 +8,7 @@ namespace ServiceWatchdog.Api.Services.Entities
 
         public int Value { get; set; }
 
-        public int Tag { get; set; }
+        public string Tag { get; set; }
 
         public int MetricId { get; set; }
 

@@ -8,7 +8,7 @@ namespace ServiceWatchdog.Api.Controllers
 {
     [Route("api/v1/services")]
     [ApiController]
-    public class IndexController : Controller
+    public class ServicesController : Controller
     {
         private readonly DowntimeCalculator _downtimeCalculator;
         private readonly ServicesManager _servicesManager;
@@ -16,7 +16,7 @@ namespace ServiceWatchdog.Api.Controllers
         private readonly IncidentUpdatesManager _incidentUpdatesManager;
         private readonly MetricsManager _metricsManager;
 
-        public IndexController(IncidentsManager incidentsManager, IncidentUpdatesManager incidentUpdatesManager, ServicesManager servicesManager, DowntimeCalculator downtimeCalculator, MetricsManager metricsManager)
+        public ServicesController(IncidentsManager incidentsManager, IncidentUpdatesManager incidentUpdatesManager, ServicesManager servicesManager, DowntimeCalculator downtimeCalculator, MetricsManager metricsManager)
         {
             _incidentsManager = incidentsManager;
             _incidentUpdatesManager = incidentUpdatesManager;
@@ -152,28 +152,6 @@ namespace ServiceWatchdog.Api.Controllers
             metric = _metricsManager.CreateMetric(metric);
 
             return Ok(metric);
-        }
-
-        [HttpDelete("metrics/{id}")]
-        public IActionResult DeleteMetric([FromRoute] int metricId)
-        {
-            _metricsManager.RemoveMetric(metricId);
-            return Ok();
-        }
-
-        [HttpGet("metrics/{id}")]
-        public IActionResult GetMetricEntries([FromRoute] int metricId, [FromQuery] int limit = 60)
-        {
-            if (_metricsManager.GetMetric(metricId) == null)
-            {
-                return NotFound(new
-                {
-                    message = "A metric with this ID does not exist."
-                });
-            }
-
-            var metricEntries = _metricsManager.GetEntries(metricId, limit);
-            return Ok(metricEntries);
         }
     }
 }

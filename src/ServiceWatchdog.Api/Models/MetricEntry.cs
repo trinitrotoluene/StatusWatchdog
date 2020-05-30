@@ -8,12 +8,11 @@ namespace ServiceWatchdog.Api.Models
         [JsonPropertyName("id")]
         public int Id { get; set; }
 
-
         [JsonPropertyName("value")]
         public int Value { get; set; }
 
         [JsonPropertyName("tag")]
-        public int Tag { get; set; }
+        public string Tag { get; set; }
 
         [JsonPropertyName("metric_id")]
         public int MetricId { get; set; }
@@ -25,7 +24,7 @@ namespace ServiceWatchdog.Api.Models
         public MetricEntry(MetricEntryModel model)
         {
             Id = model.Id;
-            Value = model.Id;
+            Value = model.Value;
             Tag = model.Tag;
             MetricId = model.MetricId;
         }

@@ -63,19 +63,20 @@ namespace ServiceWatchdog.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MetricModel",
+                name: "Metrics",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: false),
+                    Displayed = table.Column<bool>(nullable: false, defaultValue: false),
                     ServiceId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MetricModel", x => x.Id);
+                    table.PrimaryKey("PK_Metrics", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MetricModel_Services_ServiceId",
+                        name: "FK_Metrics_Services_ServiceId",
                         column: x => x.ServiceId,
                         principalTable: "Services",
                         principalColumn: "Id",
@@ -105,22 +106,22 @@ namespace ServiceWatchdog.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "MetricEntryModel",
+                name: "MetricEntries",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Value = table.Column<int>(nullable: false),
-                    Tag = table.Column<int>(nullable: false),
+                    Tag = table.Column<string>(nullable: false),
                     MetricId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MetricEntryModel", x => x.Id);
+                    table.PrimaryKey("PK_MetricEntries", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_MetricEntryModel_MetricModel_MetricId",
+                        name: "FK_MetricEntries_Metrics_MetricId",
                         column: x => x.MetricId,
-                        principalTable: "MetricModel",
+                        principalTable: "Metrics",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -136,13 +137,19 @@ namespace ServiceWatchdog.Api.Migrations
                 column: "IncidentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MetricEntryModel_MetricId",
-                table: "MetricEntryModel",
+                name: "IX_MetricEntries_MetricId",
+                table: "MetricEntries",
                 column: "MetricId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MetricModel_ServiceId",
-                table: "MetricModel",
+                name: "IX_MetricEntries_Tag",
+                table: "MetricEntries",
+                column: "Tag",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Metrics_ServiceId",
+                table: "Metrics",
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
@@ -161,13 +168,13 @@ namespace ServiceWatchdog.Api.Migrations
                 name: "KeyValueStore");
 
             migrationBuilder.DropTable(
-                name: "MetricEntryModel");
+                name: "MetricEntries");
 
             migrationBuilder.DropTable(
                 name: "Incidents");
 
             migrationBuilder.DropTable(
-                name: "MetricModel");
+                name: "Metrics");
 
             migrationBuilder.DropTable(
                 name: "Services");

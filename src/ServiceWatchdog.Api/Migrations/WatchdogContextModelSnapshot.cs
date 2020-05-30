@@ -115,8 +115,9 @@ namespace ServiceWatchdog.Api.Migrations
                     b.Property<int>("MetricId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Tag")
-                        .HasColumnType("integer");
+                    b.Property<string>("Tag")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("Value")
                         .HasColumnType("integer");
@@ -125,7 +126,10 @@ namespace ServiceWatchdog.Api.Migrations
 
                     b.HasIndex("MetricId");
 
-                    b.ToTable("MetricEntryModel");
+                    b.HasIndex("Tag")
+                        .IsUnique();
+
+                    b.ToTable("MetricEntries");
                 });
 
             modelBuilder.Entity("ServiceWatchdog.Api.Services.Entities.MetricModel", b =>
@@ -134,6 +138,11 @@ namespace ServiceWatchdog.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("Displayed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -146,7 +155,7 @@ namespace ServiceWatchdog.Api.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("MetricModel");
+                    b.ToTable("Metrics");
                 });
 
             modelBuilder.Entity("ServiceWatchdog.Api.Services.Entities.ServiceModel", b =>

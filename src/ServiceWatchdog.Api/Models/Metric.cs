@@ -32,7 +32,7 @@ namespace ServiceWatchdog.Api.Models
             Name = model.Name;
             Displayed = model.Displayed;
             ServiceId = model.ServiceId;
-            Entries = model.Entries.Select(x => new MetricEntry(x));
+            Entries = model.Entries?.Select(x => new MetricEntry(x));
         }
     }
 }

@@ -53,9 +53,11 @@ namespace ServiceWatchdog.Api.Services
         {
             using var ctx = CreateContext();
             var entries = ctx.MetricEntries.Where(x => x.MetricId == metricId)
-                .TakeLast(limit)
+                .OrderByDescending(x => x.Id)
+                .Take(limit)
                 .ToArray()
-                .Select(x => new MetricEntry(x));
+                .Select(x => new MetricEntry(x))
+                .Reverse();
 
             return entries;
         }
