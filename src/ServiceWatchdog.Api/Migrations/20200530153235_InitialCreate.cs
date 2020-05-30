@@ -69,7 +69,7 @@ namespace ServiceWatchdog.Api.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(nullable: false),
-                    Displayed = table.Column<bool>(nullable: false, defaultValue: false),
+                    Displayed = table.Column<bool>(nullable: false, defaultValue: true),
                     ServiceId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>

@@ -142,7 +142,7 @@ namespace ServiceWatchdog.Api.Migrations
                     b.Property<bool>("Displayed")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
-                        .HasDefaultValue(false);
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Name")
                         .IsRequired()

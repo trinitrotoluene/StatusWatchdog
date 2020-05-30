@@ -28,7 +28,7 @@ namespace ServiceWatchdog.Api.Services
         public IEnumerable<Metric> GetMetrics(int serviceId)
         {
             using var ctx = CreateContext();
-            return ctx.Metrics.Where(x => x.ServiceId == serviceId).ToArray().Select(x => new Metric(x));
+            return ctx.Metrics.Where(x => x.ServiceId == serviceId && x.Displayed).ToArray().Select(x => new Metric(x));
         }
 
         public Metric CreateMetric(Metric metric)

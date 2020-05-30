@@ -10,7 +10,7 @@ using ServiceWatchdog.Api.Services;
 namespace ServiceWatchdog.Api.Migrations
 {
     [DbContext(typeof(WatchdogContext))]
-    [Migration("20200530115628_InitialCreate")]
+    [Migration("20200530153235_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -144,7 +144,7 @@ namespace ServiceWatchdog.Api.Migrations
                     b.Property<bool>("Displayed")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
-                        .HasDefaultValue(false);
+                        .HasDefaultValue(true);
 
                     b.Property<string>("Name")
                         .IsRequired()

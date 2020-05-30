@@ -138,7 +138,7 @@ namespace ServiceWatchdog.Api.Services
                 .IsRequired();
 
             metric.Property(x => x.Displayed)
-                .HasDefaultValue(false)
+                .HasDefaultValue(true)
                 .IsRequired();
 
             metric.HasOne(x => x.Service)
