@@ -1,4 +1,6 @@
+using System;
 using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -57,19 +59,7 @@ namespace ServiceWatchdog.Api
                 });
             }
 
-            if (env.IsDevelopment())
-            {
-                app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new PhysicalFileProvider(
-                    Path.Combine(Directory.GetCurrentDirectory(), "client-app/dist")
-                )
-                });
-            }
-            else
-            {
-                app.UseStaticFiles();
-            }
+            app.UseStaticFiles();
 
             app.UseRouting();
 
