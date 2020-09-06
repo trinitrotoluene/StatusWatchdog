@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ServiceWatchdog.Api.Controllers.RequestModels;
 using ServiceWatchdog.Api.Models;
 using ServiceWatchdog.Api.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ServiceWatchdog.Api.Controllers
 {
@@ -23,18 +24,37 @@ namespace ServiceWatchdog.Api.Controllers
         }
 
         [HttpGet]
+
+        [SwaggerOperation(
+            Summary = "Get all currently active incidents.",
+            Description = "If an incident is currently not marked as resolved, this endpoint will return it."
+        )]
+        [SwaggerResponse(200, "", typeof(Incident[]))]
         public IActionResult GetActiveIncidents()
         {
             return Ok(_incidentsManager.GetAllActiveIncidents());
         }
 
         [HttpGet("recent")]
+
+        [SwaggerOperation(
+            Summary = "Get all recent incidents.",
+            Description = "If an incident occurred in the last 5 days, it is returned by this endpoint."
+        )]
+        [SwaggerResponse(200, "", typeof(Incident[]))]
         public IActionResult GetRecentIncidents()
         {
             return Ok(_incidentsManager.GetRecentIncidents());
         }
 
         [HttpGet("{id}")]
+
+        [SwaggerOperation(
+            Summary = "Get a specific incident by id.",
+            Description = "All incidents are assigned a unique identifier, and this endpoint allows information about an incident to be retrieved on an incident-by-incident basis."
+        )]
+        [SwaggerResponse(200, "", typeof(Incident))]
+        [SwaggerResponse(404, "Service was not found", typeof(Error))]
         public IActionResult GetIncident([FromRoute] int id)
         {
             var incident = _incidentsManager.GetIncident(id);
@@ -50,6 +70,14 @@ namespace ServiceWatchdog.Api.Controllers
         }
 
         [HttpPatch("{id}")]
+
+        [SwaggerOperation(
+            Summary = "Edit incident properties here. If a property is set to null, it is ignored.",
+            Description = "Change display information like the title or severity of an incident here. Note that once an incident state has been marked as resolved, this endpoint will cease to work."
+        )]
+        [SwaggerResponse(200, "", typeof(Incident))]
+        [SwaggerResponse(404, "An incident with this ID does not exist.", typeof(Error))]
+        [SwaggerResponse(400, "Resolved incidents cannot be edited.", typeof(Error))]
         public IActionResult UpdateIncident([FromRoute] int id, [FromBody] UpdateIncidentRequest requestBody)
         {
             var incident = _incidentsManager.GetIncident(id);
@@ -84,6 +112,14 @@ namespace ServiceWatchdog.Api.Controllers
         }
 
         [HttpPost("{id}/updates")]
+
+        [SwaggerOperation(
+            Summary = "Add update information to an incident.",
+            Description = "As the state of an incident changes, this endpoint allows updates to be appended to the incident view."
+        )]
+        [SwaggerResponse(404, "An incident with this ID does not exist.", typeof(Error))]
+        [SwaggerResponse(400, "This incident has already been marked as resolved.", typeof(Error))]
+        [SwaggerResponse(200, "", typeof(Incident))]
         public IActionResult AddUpdate([FromRoute] int id, [FromBody] CreateUpdateRequest requestBody)
         {
             var incident = _incidentsManager.GetIncident(id);

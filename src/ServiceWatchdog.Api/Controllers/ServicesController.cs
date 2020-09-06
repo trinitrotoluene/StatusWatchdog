@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using ServiceWatchdog.Api.Controllers.RequestModels;
+using ServiceWatchdog.Api.Models;
 using ServiceWatchdog.Api.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace ServiceWatchdog.Api.Controllers
 {
@@ -26,12 +28,25 @@ namespace ServiceWatchdog.Api.Controllers
         }
 
         [HttpGet]
+
+        [SwaggerOperation(
+            Summary = "Get all services that the status page displays.",
+            Description = "This endpoint returns limited information about a service, use the specific endpoints to get a service's incident history."
+        )]
+        [SwaggerResponse(200, "", typeof(Service[]))]
         public IActionResult GetServices()
         {
             return Ok(_servicesManager.GetServices());
         }
 
         [HttpGet("{id}")]
+
+        [SwaggerOperation(
+            Summary = "Retrieve more detailed information about a service by id.",
+            Description = "This endpoint currently returns the entire incident history of a service. This may change in the future."
+        )]
+        [SwaggerResponse(200, "", typeof(Service))]
+        [SwaggerResponse(404, "A service with this ID does not exist.", typeof(Error))]
         public IActionResult GetServiceById([FromRoute] int id)
         {
             var service = _servicesManager.GetService(id);
@@ -48,6 +63,12 @@ namespace ServiceWatchdog.Api.Controllers
         }
 
         [HttpPost]
+
+        [SwaggerOperation(
+            Summary = "Create a new service entry."
+        )]
+        [SwaggerResponse(200, "", typeof(Service))]
+        [SwaggerResponse(400, "A service with this slug already exists.", typeof(Error))]
         public IActionResult CreateService([FromBody] CreateServiceRequest requestBody)
         {
             var service = requestBody.ToService();
@@ -64,6 +85,13 @@ namespace ServiceWatchdog.Api.Controllers
         }
 
         [HttpGet("{id}/incidents")]
+
+        [SwaggerOperation(
+            Summary = "Get all incidents in the last N days by service id.",
+            Description = "You can specify how far into the past this endpoint will search as a query parameter."
+        )]
+        [SwaggerResponse(200, "", typeof(Incident[]))]
+        [SwaggerResponse(404, "A service with this ID does not exist.", typeof(Error))]
         public IActionResult GetIncidents([FromRoute] int id, [FromQuery] int days = 30)
         {
             var service = _servicesManager.GetService(id);
@@ -80,6 +108,13 @@ namespace ServiceWatchdog.Api.Controllers
         }
 
         [HttpPost("{id}/incidents")]
+
+        [SwaggerOperation(
+            Summary = "Create a new incident and update the status of a service by id.",
+            Description = @"The status of the service will automatically be changed to that of the ""worst"" current incident."
+        )]
+        [SwaggerResponse(200, "", typeof(Incident))]
+        [SwaggerResponse(404, "A service with this ID does not exist.", typeof(Error))]
         public IActionResult CreateIncident([FromRoute] int id, [FromBody] CreateIncidentRequest requestBody)
         {
             var service = _servicesManager.GetService(id);
@@ -87,7 +122,7 @@ namespace ServiceWatchdog.Api.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Service ID not found."
+                    message = "A service with this ID does not exist."
                 });
             }
 
@@ -112,6 +147,13 @@ namespace ServiceWatchdog.Api.Controllers
         }
 
         [HttpGet("{id}/uptime")]
+
+        [SwaggerOperation(
+            Summary = "Get the uptime metric of a service.",
+            Description = "All services automatically have their historic uptime calculated. This operation is expensive for services with a long history, and therefore results returned by this endpoint are cached after the first request."
+        )]
+        [SwaggerResponse(200, "", typeof(DowntimeStatistic[]))]
+        [SwaggerResponse(404, "A service with this ID does not exist.", typeof(Error))]
         public IActionResult GetServiceUptime([FromRoute] int id, [FromQuery] int limit = 60)
         {
             var service = _servicesManager.GetService(id);
@@ -119,7 +161,7 @@ namespace ServiceWatchdog.Api.Controllers
             {
                 return NotFound(new
                 {
-                    message = "Service ID not found."
+                    message = "A service with this ID does not exist."
                 });
             }
 
@@ -129,6 +171,11 @@ namespace ServiceWatchdog.Api.Controllers
         }
 
         [HttpGet("{id}/metrics")]
+
+        [SwaggerOperation(
+            Summary = "Get shallow information about all custom metrics associated with a service."
+        )]
+        [SwaggerResponse(200, "", typeof(Metric[]))]
         public IActionResult GetMetrics([FromRoute] int id)
         {
             var metrics = _metricsManager.GetMetrics(id);
@@ -136,6 +183,12 @@ namespace ServiceWatchdog.Api.Controllers
         }
 
         [HttpPost("{id}/metrics")]
+
+        [SwaggerOperation(
+            Summary = "Add a new custom metric to the service."
+        )]
+        [SwaggerResponse(200, "", typeof(Metric))]
+        [SwaggerResponse(404, "A service with this ID does not exist.", typeof(Error))]
         public IActionResult CreateMetric([FromRoute] int id, [FromBody] CreateMetricRequest requestBody)
         {
             var service = _servicesManager.GetService(id);

@@ -1,12 +1,8 @@
-using System;
-using System.IO;
-using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ServiceWatchdog.Api.Services;
@@ -40,6 +36,7 @@ namespace ServiceWatchdog.Api
                     Title = "ServiceWatchdog API",
                     Version = "v1"
                 });
+                x.EnableAnnotations();
             });
 
             using var dctx = new WatchdogContext(Configuration);
