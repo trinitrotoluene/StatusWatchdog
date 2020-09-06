@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiceWatchdog.Api.Controllers.RequestModels;
 using ServiceWatchdog.Api.Models;
@@ -8,6 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace ServiceWatchdog.Api.Controllers
 {
+    [Authorize]
     [Route("api/v1/services")]
     [ApiController]
     public class ServicesController : Controller
@@ -27,6 +29,7 @@ namespace ServiceWatchdog.Api.Controllers
             _metricsManager = metricsManager;
         }
 
+        [AllowAnonymous]
         [HttpGet]
 
         [SwaggerOperation(
@@ -39,6 +42,7 @@ namespace ServiceWatchdog.Api.Controllers
             return Ok(_servicesManager.GetServices());
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
 
         [SwaggerOperation(
@@ -84,6 +88,7 @@ namespace ServiceWatchdog.Api.Controllers
             return Ok(service);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/incidents")]
 
         [SwaggerOperation(
@@ -146,6 +151,7 @@ namespace ServiceWatchdog.Api.Controllers
             return Ok(incident);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/uptime")]
 
         [SwaggerOperation(
@@ -170,6 +176,7 @@ namespace ServiceWatchdog.Api.Controllers
             return Ok(uptimeStatistics);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/metrics")]
 
         [SwaggerOperation(

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiceWatchdog.Api.Controllers.RequestModels;
 using ServiceWatchdog.Api.Services;
@@ -6,6 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace ServiceWatchdog.Api.Controllers
 {
+    [Authorize]
     [Route("api/v1/kv")]
     [ApiController]
     public class KeyValuesController : Controller
@@ -30,6 +32,7 @@ namespace ServiceWatchdog.Api.Controllers
             return NoContent();
         }
 
+        [AllowAnonymous]
         [HttpPost]
 
         [SwaggerOperation(

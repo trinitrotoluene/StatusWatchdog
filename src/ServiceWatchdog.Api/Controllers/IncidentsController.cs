@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiceWatchdog.Api.Controllers.RequestModels;
 using ServiceWatchdog.Api.Models;
@@ -8,6 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace ServiceWatchdog.Api.Controllers
 {
+    [Authorize]
     [Route("api/v1/incidents")]
     [ApiController]
     public class IncidentsController : Controller
@@ -23,6 +25,7 @@ namespace ServiceWatchdog.Api.Controllers
             _servicesManager = servicesManager;
         }
 
+        [AllowAnonymous]
         [HttpGet]
 
         [SwaggerOperation(
@@ -35,6 +38,7 @@ namespace ServiceWatchdog.Api.Controllers
             return Ok(_incidentsManager.GetAllActiveIncidents());
         }
 
+        [AllowAnonymous]
         [HttpGet("recent")]
 
         [SwaggerOperation(
@@ -47,6 +51,7 @@ namespace ServiceWatchdog.Api.Controllers
             return Ok(_incidentsManager.GetRecentIncidents());
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
 
         [SwaggerOperation(

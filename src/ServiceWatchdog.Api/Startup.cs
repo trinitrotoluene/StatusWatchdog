@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using ServiceWatchdog.Api.Authentication;
 using ServiceWatchdog.Api.Services;
 
 namespace ServiceWatchdog.Api
@@ -29,6 +30,13 @@ namespace ServiceWatchdog.Api
             services.AddSingleton<MetricsManager>();
             services.AddSingleton<DowntimeCalculator>();
             services.AddDbContext<WatchdogContext>();
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = InMemoryKeyAuthenticationHandlerOptions.DefaultScheme;
+                x.DefaultChallengeScheme = InMemoryKeyAuthenticationHandlerOptions.DefaultScheme;
+            })
+            .UseInMemoryKey();
+
             services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new OpenApiInfo()
@@ -37,6 +45,16 @@ namespace ServiceWatchdog.Api
                     Version = "v1"
                 });
                 x.EnableAnnotations();
+                x.AddSecurityDefinition("apikey", new OpenApiSecurityScheme()
+                {
+                    Description = "API key authentication",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "bearer"
+                });
+
+                x.OperationFilter<SecurityRequirementsOperationFilter>();
             });
 
             using var dctx = new WatchdogContext(Configuration);
@@ -50,9 +68,16 @@ namespace ServiceWatchdog.Api
                 app.UseDeveloperExceptionPage();
 
                 app.UseSwagger();
+
                 app.UseSwaggerUI(x =>
                 {
                     x.SwaggerEndpoint("/swagger/v1/swagger.json", "ServiceWatchdog API");
+                });
+                app.UseReDoc(x =>
+                {
+                    x.RoutePrefix = "docs";
+                    x.DocumentTitle = "StatusWatchdog API Documentation";
+                    x.SpecUrl("/swagger/v1/swagger.json");
                 });
             }
 
@@ -60,6 +85,7 @@ namespace ServiceWatchdog.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

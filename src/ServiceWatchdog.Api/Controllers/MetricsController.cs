@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServiceWatchdog.Api.Controllers.RequestModels;
 using ServiceWatchdog.Api.Models;
@@ -6,6 +7,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace ServiceWatchdog.Api.Controllers
 {
+    [Authorize]
     [Route("api/v1/metrics")]
     [ApiController]
     public class MetricsController : Controller
@@ -17,6 +19,7 @@ namespace ServiceWatchdog.Api.Controllers
             _metricsManager = metricsManager;
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
 
         [SwaggerOperation(
