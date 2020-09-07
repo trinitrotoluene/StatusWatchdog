@@ -1,0 +1,36 @@
+name: .NET Core
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Build Project
+      run: dotnet build -c Release -o out
+    - name: Install Swashbuckle
+      run: dotnet tool install -g --version 5.5.0 Swashbuckle.AspNetCore.Cli
+    - name: Extract Swagger
+      run: swagger tofile --output swagger.json src/StatusWatchdog/out/StatusWatchdog.dll v1
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14.x'
+    - name: Generate ReDoc
+      run: npx redoc-cli bundle swagger.json
+    - name: Create Deployment
+      run: mkdir public && mv redoc-static.html public/index.html
+    - name: Deploy Documentation
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./public
