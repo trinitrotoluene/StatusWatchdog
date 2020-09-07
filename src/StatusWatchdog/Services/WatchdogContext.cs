@@ -28,6 +28,8 @@ namespace StatusWatchdog.Services
             string host = config["PG_HOST"];
 
             _connectionString = $"Host={host};Database={database};Username={username};Password={password}";
+
+            this.Database.Migrate();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

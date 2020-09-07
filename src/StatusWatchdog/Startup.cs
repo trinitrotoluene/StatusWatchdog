@@ -56,9 +56,6 @@ namespace StatusWatchdog
 
                 x.OperationFilter<SecurityRequirementsOperationFilter>();
             });
-
-            using var dctx = new WatchdogContext(Configuration);
-            dctx.Database.Migrate();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
