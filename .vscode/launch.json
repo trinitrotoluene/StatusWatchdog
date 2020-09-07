@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/src/ServiceWatchdog.Api/bin/Debug/netcoreapp3.1/ServiceWatchdog.Api.dll",
+            "program": "${workspaceFolder}/src/StatusWatchdog/bin/Debug/netcoreapp3.1/StatusWatchdog.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/src/ServiceWatchdog.Api",
+            "cwd": "${workspaceFolder}/src/StatusWatchdog",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {

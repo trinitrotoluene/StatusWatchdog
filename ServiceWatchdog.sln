@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D48AE6CB-A031-4008-80F6-E3950C8B0EDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceWatchdog.Api", "src\ServiceWatchdog.Api\ServiceWatchdog.Api.csproj", "{CA5E3E77-C43D-4D9D-9F82-13DE12909699}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatusWatchdog", "src\StatusWatchdog\StatusWatchdog.csproj", "{CA5E3E77-C43D-4D9D-9F82-13DE12909699}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
