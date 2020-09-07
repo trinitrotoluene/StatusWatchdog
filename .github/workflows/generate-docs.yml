@@ -20,7 +20,7 @@ jobs:
     - name: Install Swashbuckle
       run: dotnet tool install -g --version 5.5.0 Swashbuckle.AspNetCore.Cli
     - name: Extract Swagger
-      run: swagger tofile --output swagger.json src/StatusWatchdog/out/StatusWatchdog.dll v1
+      run: swagger tofile --output swagger.json /home/runner/work/StatusWatchdog/StatusWatchdog/out/StatusWatchdog.dll v1
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
