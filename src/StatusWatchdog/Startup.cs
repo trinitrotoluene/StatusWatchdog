@@ -68,7 +68,7 @@ namespace StatusWatchdog
 
                 app.UseSwaggerUI(x =>
                 {
-                    x.SwaggerEndpoint("/swagger/v1/swagger.json", "ServiceWatchdog API");
+                    x.SwaggerEndpoint("/swagger/v1/swagger.json", "StatusWatchdog API");
                 });
                 app.UseReDoc(x =>
                 {
