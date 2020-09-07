@@ -15,7 +15,7 @@ namespace StatusWatchdog
             Host.CreateDefaultBuilder(args)
                 .ConfigureHostConfiguration(cfg =>
                 {
-                    cfg.AddEnvironmentVariables("WATCHDOG_");
+                    cfg.AddEnvironmentVariables();
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

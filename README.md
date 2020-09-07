@@ -1,41 +1,66 @@
 ## About
 
-StatusWatchdog is a modern, API-first self-hostable status page. The RESTful backend API is Swagger-documented and entirely usable on its own. Most deployments will probably choose to use the included Vue.JS based client application which it is configured to serve by default.
+StatusWatchdog is an API-first status page designed to be easily self-hostable and look great. A design goal of the application is to be as easy to integrate with as possible for your own monitoring scripts, allowing you to programmatically update service status, as well as create and resolve incidents.
 
 ## Deployment
 
-Navigate to the client application and build it with `npm run build` before running `dotnet publish -c Release` in the `src/StatusWatchdog.Api` directory.
-
-Your built site + SPA will be located in `bin/Release/netcoreapp3.1/publish`. Follow the configuration guide in the following section before running the application.
-
-## Setup & Development
-
-You will likely want to customise your copy of StatusWatchdog (specifically the client UI). Before getting started, you should ensure your environment is properly configured:
+The recommended way to deploy StatusWatchdog is to run it in a docker container. You can build the docker image for yourself using the included dockerfile.
 
 ```
-.NET Core 3.1+
-Node.JS 14+ (older versions may work)
-PostgreSQL 10+ (older versions may work)
+$ docker build -t statuswatchdog:latest ./src/StatusWatchdog/Dockerfile
 ```
 
-In order to function correctly, StatusWatchdog requires the following configuration parameters to be present:
+In order to run, StatusWatchdog needs to be provided an API key and credentials to a PostgreSQL database. This is typically done through environment variables when deploying through docker.
+
+First, generate a random string to serve as your API key:
 
 ```
-PG_USERNAME (PostgreSQL username)
-PG_PASSWORD (PostgreSQL password)
-PG_DATABASE (PostgreSQL database)
-API_KEY     (API key for authenticated endpoints)
+$ openssl rand -base64 32
 ```
 
-These can be set via environment variables prefixed with `WATCHDOG_`, for example when run as a docker container. Additionally these values can be set in the `appsettings.json` configuration file, although this is not recommended for sensitive information.
+To make setup of the container easier, we'll be using `docker-compose`:
 
-## Documentation
+```yml
+version: "3"
+services:
+  web:
+    image: statuswatchdog:latest
+    ports:
+      - "5000:80"
+    environment:
+      - API_KEY=foo
+      - PG_HOST=db
+      - PG_USERNAME=postgres
+      - PG_PASSWORD=postgres
+      - PG_DATABASE=postgres
+    depends_on:
+      - "db"
+  db:
+    image: postgres
+    volumes:
+      - persist:/var/lib/postgresql
+    environment:
+      - POSTGRES_PASSWORD=postgres
+volumes:
+  persist:
+```
 
-If you are running the repository locally, using `dotnet run` - you will be able to access ReDoc API documentation from the `/docs` endpoint, and SwaggerUI documentation with Try It features on the `/swagger` endpoint. These are disabled when the application is deployed.
+Running `docker-compose up -d` at this point should result in an instance of StatusWatchdog becoming available at `http://localhost:5000`.
 
-A static version of the documentation is WIP for when continuous integration is set up for the repository.
-
-## UI Screenshots
-**Current state of the project, more views and screenshots coming soon.**
+## Screenshots
 ![status-page-screenshot](img/status-page.png)
 ![issue-report-screenshot](img/issue-report.png)
+
+## Development
+
+When working on StatusWatchdog you'll want two CLI sessions running for rapid feedback during development:
+
+In src/StatusWatchdog
+```
+$ dotnet watch run
+```
+
+In src/StatusWatchdog/client-app
+```
+$ npm run watch
+```
