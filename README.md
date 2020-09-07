@@ -47,6 +47,16 @@ volumes:
 
 Running `docker-compose up -d` at this point should result in an instance of StatusWatchdog becoming available at `http://localhost:5000`.
 
+At this point you'll be able to start setting up your status page! Your first port of call should be the [API documentation](https://trinitrotoluene.github.io/StatusWatchdog/).
+
+## Next Steps
+
+The site will pull the title and subtitle of your page from its KV store, they can be set using the `title` and `subtitle` keys.
+
+Currently any administrative actions must be made through API calls, but a CLI or GUI tool for doing so is planned for the future.
+
+Authentication is done by setting the `Authorization` header of your request to the value of the `API_KEY` environment variable you've set. **Keep this secret and ensure that it is secure!**
+
 ## Screenshots
 ![status-page-screenshot](img/status-page.png)
 ![issue-report-screenshot](img/issue-report.png)
