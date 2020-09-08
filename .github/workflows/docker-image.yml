@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+      - name: Checkout submodules
+        uses: textbook/git-checkout-submodule-action@master
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v1
         with:
