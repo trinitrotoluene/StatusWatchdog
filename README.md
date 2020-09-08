@@ -4,10 +4,16 @@ StatusWatchdog is an API-first status page designed to be easily self-hostable a
 
 ## Deployment
 
-The recommended way to deploy StatusWatchdog is to run it in a docker container. You can build the docker image for yourself using the included dockerfile.
+The recommended way to deploy StatusWatchdog is to run it in a docker container. You can build the docker image for yourself using the included dockerfile:
 
 ```
 $ docker build -t statuswatchdog:latest ./src/StatusWatchdog/Dockerfile
+```
+
+or pull an image built by CI instead:
+
+```
+$ docker pull docker.pkg.github.com/trinitrotoluene/statuswatchdog/statuswatchdog:latest
 ```
 
 In order to run, StatusWatchdog needs to be provided an API key and credentials to a PostgreSQL database. This is typically done through environment variables when deploying through docker.
