@@ -1,5 +1,9 @@
 ## About
 
+![Build](https://github.com/trinitrotoluene/StatusWatchdog/workflows/Build/badge.svg)
+![Documentation](https://github.com/trinitrotoluene/StatusWatchdog/workflows/Documentation/badge.svg)
+![Docker Deploy](https://github.com/trinitrotoluene/StatusWatchdog/workflows/Docker%20Deploy/badge.svg)
+
 StatusWatchdog is an API-first status page designed to be easily self-hostable and look great. A design goal of the application is to be as easy to integrate with as possible for your own monitoring scripts, allowing you to programmatically update service status, as well as create and resolve incidents.
 
 ## Deployment
